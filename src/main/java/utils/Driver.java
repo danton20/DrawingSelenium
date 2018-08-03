@@ -17,8 +17,9 @@ public class Driver {
   protected static WebDriver driver;
   protected static WebDriverWait wait;
   protected static Actions actions;
+  protected static Robot robot;
   
-  public static void startDriver() {
+  public static void startDriver() throws Exception {
     String userDir = System.getProperty("user.dir");
     System.setProperty("webdriver.chrome.driver", userDir + "\\driver\\chromedriver.exe");
     ChromeOptions options = new ChromeOptions();
@@ -26,6 +27,7 @@ public class Driver {
     driver = new ChromeDriver(options);
     wait = new WebDriverWait(driver, 10);
     actions = new Actions(driver);
+    robot = new Robot();
     driver.manage().window().maximize();
   }
   
@@ -38,16 +40,25 @@ public class Driver {
     actions.moveByOffset(posX, posY).click().build().perform();
   }
   
-  public static void arrastar(Integer posInicialX, Integer posInicialY, Integer posFinalX, Integer posFinalY) throws Exception {
-    Robot robot = new Robot();
-//    Thread.sleep(5000);
-    robot.mouseMove(posInicialX, posInicialY);
+  public static void clicaRobot(Integer posX, Integer posY) throws Exception {
+    mousePressRobot();
+    robot.delay(50);
+    moverMouseRobot(posX, posY);
+    robot.delay(50);
+    mouseReleaseRobot();
+    robot.delay(50);
+  }
+  
+  public static void moverMouseRobot(Integer posX, Integer posY) throws Exception {
+    robot.mouseMove(posX, posY);
+  }
+  
+  public static void mousePressRobot() {
     robot.mousePress(InputEvent.BUTTON1_MASK);
-    Thread.sleep(500);
-    robot.mouseMove(posFinalX, posFinalY);
+  }
+  
+  public static void mouseReleaseRobot() {
     robot.mouseRelease(InputEvent.BUTTON1_MASK);
-//    actions.moveByOffset(posInicialX, posInicialY).pause(Duration.ofSeconds(1)).click().pause(Duration.ofSeconds(1))
-//        .moveByOffset(posFinalX, posFinalY).release().perform();
   }
   
   public static void preencher(String xpath, String texto) {
